@@ -3,8 +3,8 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
-    <http:listener-config name="accounts-api-httpListenerConfig" host="0.0.0.0" port="${http.port}" doc:name="HTTP Listener Configuration"/>
-    <apikit:config name="accounts-api-config" raml="accounts-api.raml" consoleEnabled="false" doc:name="Router"/>
+    <http:listener-config name="accounts-api-httpListenerConfig" host="localhost" port="${http.port}" doc:name="HTTP Listener Configuration"/>
+    <apikit:config name="accounts-api-config" raml="accounts-api.raml" consoleEnabled="true" doc:name="Router" keepRamlBaseUri="false"/>
     <flow name="accounts-api-main">
         <http:listener config-ref="accounts-api-httpListenerConfig" path="/api/*" doc:name="HTTP"/>
         <apikit:router config-ref="accounts-api-config" doc:name="APIkit Router"/>

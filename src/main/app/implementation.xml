@@ -16,11 +16,12 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
     <db:mysql-config name="MySQL_Configuration" host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" doc:name="MySQL Configuration"/>
     <context:property-placeholder location="${env}.properties"/>
     <http:listener-config name="HTTP_Listener_TEST_Config" host="0.0.0.0" port="9090" doc:name="HTTP Listener Configuration"/>
-    <http:request-config name="HTTP_Request_Configuration" host="0.0.0.0" port="8081" basePath="/api" doc:name="HTTP Request Configuration"/>
-    <http:listener-config name="HTTP_Listener" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
+    <http:request-config name="HTTP_Request_Configuration" host="0.0.0.0" port="8080" basePath="/api" doc:name="HTTP Request Configuration"/>
+    <http:listener-config name="HTTP_Listener" host="0.0.0.0" port="8082" doc:name="HTTP Listener Configuration"/>
     <flow name="getAllAccountsFlow">
+        <set-variable variableName="type" value="#[message.inboundProperties.'http.query.params'.type]" doc:name="Variable"/>
         <db:select config-ref="MySQL_Configuration" doc:name="Database">
-            <db:parameterized-query><![CDATA[SELECT * FROM ${db.tableName} WHERE accountType = #{flowVars.type}]]></db:parameterized-query>
+            <db:parameterized-query><![CDATA[SELECT * FROM ${db.tableName} WHERE accountType = #[flowVars.type]]]></db:parameterized-query>
         </db:select>
         <dw:transform-message doc:name="Transform Message" metadata:id="4c749ffc-8f46-45b1-ba97-60bba39fffd9">
             <dw:input-payload doc:sample="sample_data/list_map.dwl"/>
@@ -50,7 +51,7 @@ payload map ((payload01 , indexOfPayload01) -> {
 
 ---
 (payload map (payload01 , indexOfPayload01) -> {
-	salesID: payload01.accountID ++ payload01.name ++ payload01.postal + payload01.creationDate
+	salesID: payload01.accountID ++ payload01.name ++ payload01.postal ++ payload01.creationDate,
 	id: payload01.accountID,
    	firstName: (payload01.name splitBy ' ')[0],
 	lastName: payload01.name splitBy ' ' [1 to -1] joinBy " ",
